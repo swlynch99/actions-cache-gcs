@@ -13,7 +13,8 @@ import {
   getUploadOptions,
   getDownloadOptions,
 } from "./options.js";
-import { writeFile } from "node:fs/promises";
+import { getCacheFilename, getWorkingDirectory } from "./utils.js";
+import { createTar, extractTar } from "./tar.js";
 
 export { ValidationError, ReserveCacheError } from "./error.js";
 
@@ -57,13 +58,13 @@ export async function saveCache(
   }
 
   const tempdir = await createTempDirectory();
-  const archive = path.join(tempdir, `cache.tar.${method}`);
+  const archive = path.join(tempdir, getCacheFilename(method));
   const repo = context.repo.repo;
 
   core.debug(`Archive Path: ${archive}`);
 
   try {
-    await createTar(archive, tempdir, paths, method);
+    await createTar(tempdir, paths, method);
 
     const bucket = storage.bucket(options.bucket!);
 
@@ -134,15 +135,14 @@ export async function restoreCache(
 
     if (!options.lookupOnly) {
       const tmpdir = await createTempDirectory();
-      destination = `${tmpdir}/cache.tar.${method}`;
+      destination = path.join(tmpdir, getCacheFilename(method));
 
       await entry.download({ destination });
-
-      await extractTar(destination);
+      await extractTar(destination, method);
     }
 
     // Strip off the `${repository}/` prefix on the cache object.
-    return entry.name.substring(repository.length);
+    return entry.name.substring(repository.length + 1);
   } catch (e) {
     const error = e as Error;
 
@@ -252,40 +252,6 @@ async function createTempDirectory(): Promise<string> {
   const dest = path.join(tempdir, crypto.randomUUID());
   await io.mkdirP(dest);
   return dest;
-}
-
-function getWorkingDirectory(): string {
-  return process.env["GITHUB_WORKSPACE"] ?? process.cwd();
-}
-
-async function createTar(
-  archive: string,
-  tempdir: string,
-  paths: string[],
-  method: "zstd" | "gzip"
-): Promise<void> {
-  const manifest = path.join(tempdir, "manifest.txt");
-  await writeFile(manifest, paths.join("\n"));
-
-  const args = ["cf", archive, "--files-from", manifest];
-  if (method === "gzip") {
-    args.push("--gzip");
-  } else {
-    args.push("--zstd");
-  }
-
-  await exec.exec("tar", args);
-}
-
-async function extractTar(archive: string) {
-  const workdir = getWorkingDirectory();
-  await io.mkdirP(workdir);
-
-  try {
-    exec.exec("tar", ["xf", archive]);
-  } catch (e) {
-    throw new Error(`tar xf ${archive} failed with error: ${e}`);
-  }
 }
 
 async function resolvePaths(patterns: string[]): Promise<string[]> {
