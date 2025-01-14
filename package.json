@@ -2,13 +2,6 @@
   "name": "@swlynch99/actions-cache-gcs",
   "version": "0.1.1",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "format": "prettier --write .",
-    "prebuild": "rimraf dist",
-    "build": "tsc --outdir dist",
-    "preversion": "pnpm run build"
-  },
   "keywords": [],
   "author": "swlynch99",
   "license": "MIT",
@@ -26,10 +19,27 @@
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3"
   },
+  "scripts": {
+    "format": "prettier --write .",
+    "prebuild": "rimraf dist",
+    "build:esm": "tsc --outdir dist/esm",
+    "build:cjs": "tsc --outdir dist/cjs --module commonjs --moduleResolution node10",
+    "build:types": "tsc --outdir dist/types --emitDeclarationOnly --declaration",
+    "build": "pnpm run build:esm && pnpm run build:cjs && pnpm run build:types",
+    "preversion": "pnpm run build"
+  },
   "files": [
     "dist",
     "src"
   ],
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts"
+  "type": "module",
+  "exports": {
+    "types": "./dist/types/index.d.ts",
+    "require": "./dist/cjs/index.js",
+    "import": "./dist/esm/index.js"
+  },
+  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/types/index.d.ts",
+  "sideEffects": false
 }

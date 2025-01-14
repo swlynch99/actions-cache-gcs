@@ -1,4 +1,4 @@
-import { ConfigUnsetError } from "./error";
+import { ConfigUnsetError } from "./error.js";
 
 interface CommonOptions {
   /**

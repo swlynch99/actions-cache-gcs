@@ -6,16 +6,16 @@ import { context } from "@actions/github";
 import { File, Storage } from "@google-cloud/storage";
 import * as path from "path";
 import * as crypto from "crypto";
-import { ValidationError } from "./error";
+import { ValidationError } from "./error.js";
 import {
   UploadOptions,
   DownloadOptions,
   getUploadOptions,
   getDownloadOptions,
-} from "./options";
+} from "./options.js";
 import { writeFile } from "node:fs/promises";
 
-export { ValidationError, ReserveCacheError } from "./error";
+export { ValidationError, ReserveCacheError } from "./error.js";
 
 const ContentTypePrefix = "application/x-actions-cache-gcs-";
 
