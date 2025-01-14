@@ -18,6 +18,16 @@ import { writeFile } from "node:fs/promises";
 const ContentTypePrefix = "application/x-actions-cache-gcs-";
 
 /**
+ * isFeatureAvailable checks whether the cache service is available.
+ * 
+ * @returns true - with the right configuration it should always be possible to
+ *          use GCS as a cache.
+ */
+export function isFeatureAvailable(): boolean {
+  return true;
+}
+
+/**
  * Saves a list of files with the specified key.
  *
  * @param paths a list of file paths to be cached
@@ -96,6 +106,7 @@ export async function restoreCache(
   }
 
   const storage = new Storage();
+  const repository = context.repo.repo;
   let destination: string | undefined;
 
   try {
@@ -128,7 +139,8 @@ export async function restoreCache(
       await extractTar(destination);
     }
 
-    return entry.name;
+    // Strip off the `${repository}/` prefix on the cache object.
+    return entry.name.substring(repository.length);
   } catch (e) {
     const error = e as Error;
 
