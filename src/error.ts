@@ -1,4 +1,3 @@
-
 export class ValidationError extends Error {
   constructor(message: string) {
     super(message);
@@ -9,7 +8,7 @@ export class ValidationError extends Error {
 
 export class ConfigUnsetError extends Error {
   constructor(message: string) {
-    super(message)
+    super(message);
     this.name = "ConfigUnsetError";
     Object.setPrototypeOf(this, ConfigUnsetError.prototype);
   }

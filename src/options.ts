@@ -34,7 +34,7 @@ function getCommonOptions(base?: CommonOptions): CommonOptions {
 
     if (!value) {
       throw new ConfigUnsetError(
-        "Config Error: no bucket value provided and ACTIONS_GCS_CACHE_BUCKET environment variable is unset"
+        "Config Error: no bucket value provided and ACTIONS_GCS_CACHE_BUCKET environment variable is unset",
       );
     }
 

@@ -1,14 +1,17 @@
 {
-  "name": "actions-cache-gcs",
-  "version": "1.0.0",
+  "name": "@swlynch99/actions-cache-gcs",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prebuild": "rimraf dist",
+    "build": "tsc --outdir dist",
+    "preversion": "pnpm run build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "swlynch99",
+  "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
@@ -16,5 +19,17 @@
     "@actions/glob": "^0.5.0",
     "@actions/io": "^1.1.3",
     "@google-cloud/storage": "^7.15.0"
-  }
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts"
 }

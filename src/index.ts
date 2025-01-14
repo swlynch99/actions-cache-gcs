@@ -28,7 +28,7 @@ const ContentTypePrefix = "application/x-actions-cache-gcs-";
 export async function saveCache(
   paths: string[],
   key: string,
-  options?: UploadOptions
+  options?: UploadOptions,
 ): Promise<void> {
   options = getUploadOptions(options);
 
@@ -40,7 +40,7 @@ export async function saveCache(
 
   if (cachePaths.length === 0) {
     throw new ValidationError(
-      `Path Validation Error: Path(s) specified in teh action for caching do(es) not exist, hence no cache is being saved`
+      `Path Validation Error: Path(s) specified in teh action for caching do(es) not exist, hence no cache is being saved`,
     );
   }
 
@@ -76,7 +76,7 @@ export async function restoreCache(
   paths: string[],
   primaryKey: string,
   restoreKeys?: string[],
-  options?: DownloadOptions
+  options?: DownloadOptions,
 ): Promise<string | undefined> {
   options = getDownloadOptions(options);
 
@@ -87,7 +87,7 @@ export async function restoreCache(
 
   if (keys.length > 10) {
     throw new ValidationError(
-      `Key Validation Error: Keys are limited to a maximum of 10`
+      `Key Validation Error: Keys are limited to a maximum of 10`,
     );
   }
 
@@ -148,7 +148,7 @@ export async function restoreCache(
 function checkKey(key: string): void {
   if (key.length > 512) {
     throw new ValidationError(
-      `Key Validation Error: ${key} cannot be larger than 512 characters.`
+      `Key Validation Error: ${key} cannot be larger than 512 characters.`,
     );
   }
 }
@@ -178,7 +178,7 @@ async function getZstdVersion(): Promise<string> {
       },
     });
   } catch (e) {
-    core.debug(e.message);
+    core.debug(`${e}`);
   }
 
   return output;
@@ -187,7 +187,7 @@ async function getZstdVersion(): Promise<string> {
 async function findCacheEntry(
   storage: Storage,
   keys: string[],
-  bucketName: string
+  bucketName: string,
 ): Promise<File | undefined> {
   const bucket = storage.bucket(bucketName);
   const repository = context.repo.repo;
@@ -244,7 +244,7 @@ async function createTar(
   archive: string,
   tempdir: string,
   paths: string[],
-  method: "zstd" | "gzip"
+  method: "zstd" | "gzip",
 ): Promise<void> {
   const manifest = path.join(tempdir, "manifest.txt");
   await writeFile(manifest, paths.join("\n"));
