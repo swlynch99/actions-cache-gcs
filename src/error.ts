@@ -13,3 +13,11 @@ export class ConfigUnsetError extends Error {
     Object.setPrototypeOf(this, ConfigUnsetError.prototype);
   }
 }
+
+export class ReserveCacheError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = ReserveCacheError.name;
+    Object.setPrototypeOf(this, ReserveCacheError.prototype);
+  }
+}

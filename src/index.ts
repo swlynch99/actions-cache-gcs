@@ -15,6 +15,8 @@ import {
 } from "./options";
 import { writeFile } from "node:fs/promises";
 
+export { ValidationError, ReserveCacheError } from "./error";
+
 const ContentTypePrefix = "application/x-actions-cache-gcs-";
 
 /**
@@ -39,7 +41,7 @@ export async function saveCache(
   paths: string[],
   key: string,
   options?: UploadOptions
-): Promise<void> {
+): Promise<number> {
   options = getUploadOptions(options);
 
   const method = await getCompressionMethod();
@@ -50,7 +52,7 @@ export async function saveCache(
 
   if (cachePaths.length === 0) {
     throw new ValidationError(
-      `Path Validation Error: Path(s) specified in teh action for caching do(es) not exist, hence no cache is being saved`
+      `Path Validation Error: Path(s) specified in the action for caching do(es) not exist, hence no cache is being saved`
     );
   }
 
@@ -71,7 +73,7 @@ export async function saveCache(
     });
   } catch (e) {}
 
-  throw "not implemented";
+  return 0;
 }
 
 /**
